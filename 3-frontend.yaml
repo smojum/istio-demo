@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: news-frontend
+  namespace: istio-demo
+  labels:
+    app: news-frontend
+    service: news-frontend
+spec:
+  ports:
+    - port: 8080
+      name: http
+  selector:
+    app: news-frontend
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: news-frontend
+  namespace: istio-demo
+  labels:
+    account: news-frontend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: news-frontend-v1
+  namespace: istio-demo
+  labels:
+    app: news-frontend
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: news-frontend
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: news-frontend
+        version: v1
+    spec:
+      serviceAccountName: news-frontend
+      containers:
+        - name: news-frontend
+          image: docker.io/smojum/pega-frontend:latest
+          imagePullPolicy: Always
+          env:
+            - name: SERVER_PORT
+              value: "8080"
+            - name: APP_HEADLINE_URL
+              value: "http://news-backend.istio-demo.svc.cluster.local:8080"
+            - name: APP_WEATHER_URL
+              value: "http://news-backend.istio-demo.svc.cluster.local:8080"
+          ports:
+            - containerPort: 8080
