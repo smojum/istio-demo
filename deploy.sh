@@ -1,7 +1,7 @@
-kubectl apply -f 0-istio.yaml
-kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.14/samples/addons/kiali.yaml
-kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.14/samples/addons/grafana.yaml
-kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.14/samples/addons/jaeger.yaml
-kubectl apply -f 1-namespace.yaml
-kubectl apply -f 2-backend.yaml
-kubectl apply -f 3-frontend.yaml
+kubectl apply -f istio-core/namespace.yaml
+kubectl apply -f istio-core/istio-1.15.yaml
+kubectl wait deployment -n istio-system --all --for condition=Available=True --timeout=90s
+kubectl apply -f istio-addons
+kubectl wait deployment -n istio-system --all --for condition=Available=True --timeout=90s
+kubectl apply -f istio-demo
+kubectl wait deployment -n istio-demo --all --for condition=Available=True --timeout=90s

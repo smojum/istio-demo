@@ -12,6 +12,7 @@ spec:
       name: http
   selector:
     app: news-frontend
+  type: NodePort
 ---
 apiVersion: v1
 kind: ServiceAccount
